@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/vegvari/AliusConfig.svg?branch=master)](https://travis-ci.org/vegvari/AliusTag)
+[![Build Status](https://travis-ci.org/vegvari/AliusTag.svg?branch=master)](https://travis-ci.org/vegvari/AliusTag)
 
 # Alius Tag
 
