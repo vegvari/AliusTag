@@ -8,18 +8,17 @@ class Tag
      * @var array
      */
     protected static $singletons = ['area', 'base', 'br', 'col', 'command',
-        'embed', 'hr', 'img', 'input', 'link', 'meta', 'param', 'source', 'wbr',
-        '!DOCTYPE', ];
-
-    /**
-     * @var bool
-     */
-    protected $singleton = false;
+        'embed', 'hr', 'img', 'input', 'link', 'meta', 'param', 'source', 'wbr', ];
 
     /**
      * @var string
      */
     protected $tag;
+
+    /**
+     * @var bool
+     */
+    protected $singleton = false;
 
     /**
      * @var array
@@ -37,7 +36,6 @@ class Tag
     public function __construct($tag)
     {
         $this->setTag($tag);
-        $this->singleton = in_array($this->tag, static::$singletons);
     }
 
     /**
@@ -92,6 +90,7 @@ class Tag
     public function setTag($tag)
     {
         $this->tag = $tag;
+        $this->singleton = in_array($this->tag, static::$singletons);
         return $this;
     }
 
@@ -196,11 +195,7 @@ class Tag
                 $value = implode(' ', $value);
             }
 
-            if ($value === null) {
-                $render[] = $key;
-            } else {
-                $render[] = $key . '="' . $value . '"';
-            }
+            $render[] = $key . '="' . $value . '"';
         }
 
         return implode(' ', $render);
@@ -416,13 +411,13 @@ class Tag
             $render[] = ' ' . $attr;
         }
 
-        if (! $this->isSingleton()) {
+        if ($this->isSingleton()) {
+            $render[] = ' />';
+        } else {
             $render[] = '>';
             $render[] = $this->renderContent();
-            $render[] = '</' . $this->tag;
+            $render[] = '</' . $this->tag . '>';
         }
-
-        $render[] = '>';
 
         if ($this->isSingleton()) {
             $render[] = $this->renderContent();
@@ -587,7 +582,7 @@ class Tag
         $instance = static::input('checkbox', $name, $value);
 
         if ($checked === true) {
-            $instance->checked();
+            $instance->checked('checked');
         }
 
         return $instance;
@@ -606,7 +601,7 @@ class Tag
         $instance = static::input('radio', $name, $value);
 
         if ($checked === true) {
-            $instance->checked();
+            $instance->checked('checked');
         }
 
         return $instance;
@@ -678,7 +673,7 @@ class Tag
         $instance = static::make('option')->value($value)->add($text);
 
         if ($selected === true) {
-            $instance->selected();
+            $instance->selected('selected');
         }
 
         return $instance;

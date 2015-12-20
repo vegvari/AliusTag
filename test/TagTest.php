@@ -21,7 +21,7 @@ class TagTest extends PHPUnit_Framework_TestCase
     public function testDefaultSingletons()
     {
         $singletons = ['area', 'base', 'br', 'col', 'command', 'embed', 'hr',
-            'img', 'input', 'link', 'meta', 'param', 'source', 'wbr', '!DOCTYPE'];
+            'img', 'input', 'link', 'meta', 'param', 'source', 'wbr', ];
 
         foreach ($singletons as $key => $value) {
             $tag = new Tag($value);
@@ -57,7 +57,7 @@ class TagTest extends PHPUnit_Framework_TestCase
         $tag->attr('foo');
         $this->assertSame(null, $tag->getAttr('foo'));
         $this->assertSame(true, $tag->hasAttr('foo'));
-        $this->assertSame('foo', $tag->renderAttr());
+        $this->assertSame('foo=""', $tag->renderAttr());
 
         // set foo with empty string
         $tag->attr('foo', '');
@@ -163,7 +163,7 @@ class TagTest extends PHPUnit_Framework_TestCase
         $this->assertSame([], $tag->getClass());
         $this->assertSame(false, $tag->hasClass(null));
         $this->assertSame(true, $tag->hasAttr('class'));
-        $this->assertSame('class', $tag->renderAttr());
+        $this->assertSame('class=""', $tag->renderAttr());
 
         // add empty string
         $tag->addClass('');
@@ -242,7 +242,7 @@ class TagTest extends PHPUnit_Framework_TestCase
         $tag->data('foo', null);
         $this->assertSame(null, $tag->getData('foo'));
         $this->assertSame(true, $tag->hasData('foo'));
-        $this->assertSame('data-foo', $tag->renderAttr());
+        $this->assertSame('data-foo=""', $tag->renderAttr());
 
         // set empty string
         $tag->data('foo', '');
@@ -286,19 +286,19 @@ class TagTest extends PHPUnit_Framework_TestCase
     {
         // singleton
         $tag = new Tag('img');
-        $this->assertSame('<img>', $tag->render());
+        $this->assertSame('<img />', $tag->render());
 
         $tag->attr('foo', 'bar');
-        $this->assertSame('<img foo="bar">', $tag->render());
+        $this->assertSame('<img foo="bar" />', $tag->render());
 
         $tag->add('foo bar');
-        $this->assertSame('<img foo="bar">foo bar', $tag->render());
+        $this->assertSame('<img foo="bar" />foo bar', $tag->render());
 
         $tag->class('foo bar');
-        $this->assertSame('<img foo="bar" class="foo bar">foo bar', $tag->render());
+        $this->assertSame('<img foo="bar" class="foo bar" />foo bar', $tag->render());
 
         $tag->data('foo', 'bar');
-        $this->assertSame('<img foo="bar" class="foo bar" data-foo="bar">foo bar', $tag->render());
+        $this->assertSame('<img foo="bar" class="foo bar" data-foo="bar" />foo bar', $tag->render());
 
         // test cast to string
         $tag = new Tag('div');
@@ -355,22 +355,22 @@ class TagTest extends PHPUnit_Framework_TestCase
         $this->assertSame('<a href="url">text</a>', $instance->render());
 
         $instance = Tag::img('url');
-        $this->assertSame('<img src="url">', $instance->render());
+        $this->assertSame('<img src="url" />', $instance->render());
 
         $instance = Tag::form('url');
         $this->assertSame('<form action="url" method="post"></form>', $instance->render());
 
         $instance = Tag::form('url', 'post', 'token');
-        $this->assertSame('<form action="url" method="post"><input type="hidden" name="_token" value="token"></form>', $instance->render());
+        $this->assertSame('<form action="url" method="post"><input type="hidden" name="_token" value="token" /></form>', $instance->render());
 
         $instance = Tag::form('url', 'get');
         $this->assertSame('<form action="url" method="get"></form>', $instance->render());
 
         $instance = Tag::form('url', 'put');
-        $this->assertSame('<form action="url" method="post"><input type="hidden" name="_method" value="put"></form>', $instance->render());
+        $this->assertSame('<form action="url" method="post"><input type="hidden" name="_method" value="put" /></form>', $instance->render());
 
         $instance = Tag::form('url', 'put', 'token');
-        $this->assertSame('<form action="url" method="post"><input type="hidden" name="_method" value="put"><input type="hidden" name="_token" value="token"></form>', $instance->render());
+        $this->assertSame('<form action="url" method="post"><input type="hidden" name="_method" value="put" /><input type="hidden" name="_token" value="token" /></form>', $instance->render());
 
         $instance = Tag::label();
         $this->assertSame('<label></label>', $instance->render());
@@ -388,34 +388,34 @@ class TagTest extends PHPUnit_Framework_TestCase
         $this->assertSame('<caption>stuff</caption>', $instance->render());
 
         $instance = Tag::input('text', 'stuff');
-        $this->assertSame('<input type="text" name="stuff">', $instance->render());
+        $this->assertSame('<input type="text" name="stuff" />', $instance->render());
 
         $instance = Tag::input('text', 'stuff', 'default');
-        $this->assertSame('<input type="text" name="stuff" value="default">', $instance->render());
+        $this->assertSame('<input type="text" name="stuff" value="default" />', $instance->render());
 
         $instance = Tag::checkbox('test', 'stuff');
-        $this->assertSame('<input type="checkbox" name="test" value="stuff">', $instance->render());
+        $this->assertSame('<input type="checkbox" name="test" value="stuff" />', $instance->render());
 
         $instance = Tag::checkbox('test', 'stuff', true);
-        $this->assertSame('<input type="checkbox" name="test" value="stuff" checked>', $instance->render());
+        $this->assertSame('<input type="checkbox" name="test" value="stuff" checked="checked" />', $instance->render());
 
         $instance = Tag::radio('test', 'stuff');
-        $this->assertSame('<input type="radio" name="test" value="stuff">', $instance->render());
+        $this->assertSame('<input type="radio" name="test" value="stuff" />', $instance->render());
 
         $instance = Tag::radio('test', 'stuff', true);
-        $this->assertSame('<input type="radio" name="test" value="stuff" checked>', $instance->render());
+        $this->assertSame('<input type="radio" name="test" value="stuff" checked="checked" />', $instance->render());
 
         $instance = Tag::text('test');
-        $this->assertSame('<input type="text" name="test">', $instance->render());
+        $this->assertSame('<input type="text" name="test" />', $instance->render());
 
         $instance = Tag::text('test', 'stuff');
-        $this->assertSame('<input type="text" name="test" value="stuff">', $instance->render());
+        $this->assertSame('<input type="text" name="test" value="stuff" />', $instance->render());
 
         $instance = Tag::password('test');
-        $this->assertSame('<input type="password" name="test">', $instance->render());
+        $this->assertSame('<input type="password" name="test" />', $instance->render());
 
         $instance = Tag::hidden('test', 'stuff');
-        $this->assertSame('<input type="hidden" name="test" value="stuff">', $instance->render());
+        $this->assertSame('<input type="hidden" name="test" value="stuff" />', $instance->render());
 
         $instance = Tag::select('test');
         $this->assertSame('<select name="test"></select>', $instance->render());
@@ -427,7 +427,7 @@ class TagTest extends PHPUnit_Framework_TestCase
         $this->assertSame('<option value="test">stuff</option>', $instance->render());
 
         $instance = Tag::option('test', 'stuff', true);
-        $this->assertSame('<option value="test" selected>stuff</option>', $instance->render());
+        $this->assertSame('<option value="test" selected="selected">stuff</option>', $instance->render());
 
         $instance = Tag::textarea('test');
         $this->assertSame('<textarea name="test"></textarea>', $instance->render());
@@ -438,8 +438,7 @@ class TagTest extends PHPUnit_Framework_TestCase
 
     public function testHelloWorld()
     {
-        $tag = Tag::make('!DOCTYPE')->html()->add(
-            Tag::html()->lang('en')
+        $tag = Tag::html()->lang('en')
             ->add(Tag::head()
                 ->add(Tag::title()->add('HTML5'))
                 ->add(Tag::meta()->charset('utf-8'))
@@ -447,9 +446,8 @@ class TagTest extends PHPUnit_Framework_TestCase
             )
             ->add(Tag::body()
                 ->add(Tag::div('Hello World!'))
-            )
-        );
+            );
 
-        $this->assertSame('<!DOCTYPE html><html lang="en"><head><title>HTML5</title><meta charset="utf-8"><meta author="Romeo Vegvari"></head><body><div>Hello World!</div></body></html>', $tag->render());
+        $this->assertSame('<html lang="en"><head><title>HTML5</title><meta charset="utf-8" /><meta author="Romeo Vegvari" /></head><body><div>Hello World!</div></body></html>', $tag->render());
     }
 }
