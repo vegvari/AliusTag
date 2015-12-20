@@ -134,10 +134,6 @@ class Tag
      */
     public function attr($name, $value = null)
     {
-        if (is_string($value)) {
-            $value = htmlspecialchars((string) $value, ENT_COMPAT);
-        }
-
         $this->attributes[$name] = $value;
         return $this;
     }
@@ -193,6 +189,10 @@ class Tag
         foreach ($this->attributes as $key => $value) {
             if (is_array($value)) {
                 $value = implode(' ', $value);
+            }
+
+            if (is_string($value)) {
+                $value = htmlspecialchars($value, ENT_COMPAT);
             }
 
             $render[] = $key . '="' . $value . '"';

@@ -2,41 +2,38 @@
 
 # Alius Tag
 
-It's just a simple class to create html tags.
+It's just a simple class to create tags.
 
 ### Basic usage
 
 ```
 $img = new Tag('img');
-print $img; // <img>
+print $img; // <img />
 
 $img->src('url')
-print $img; // <img src="url">
+print $img; // <img src="url" />
 
 $img->alt();
-print $img; // <img src="url" alt>
-
-$img->alt('');
-print $img; // <img src="url" alt="">
+print $img; // <img src="url" alt="" />
 
 $img->alt('Cute cat')
-print $img; // <img src="url" alt="Cute cat">
+print $img; // <img src="url" alt="Cute cat" />
 
 $img->class('cute');
-print $img; // <img src="url" alt="Cute cat" class="cute">
+print $img; // <img src="url" alt="Cute cat" class="cute" />
 
 $img->class('dog');
-print $img; // <img src="url" alt="Cute cat" class="dog">
+print $img; // <img src="url" alt="Cute cat" class="dog" />
 
 $img->addClass('cute');
-print $img; // <img src="url" alt="Cute cat" class="dog cute">
+print $img; // <img src="url" alt="Cute cat" class="dog cute" />
 
 $div = new Tag('div');
 $div->add($img);
-print $div; // <div><img src="url" alt="Cute cat" class="dog cute"></div>
+print $div; // <div><img src="url" alt="Cute cat" class="dog cute" /></div>
 
 $div->data('ng-class', 'test');
-print $div; // <div data-ng-class="test"><img src="url" alt="Cute cat" class="dog cute"></div>
+print $div; // <div data-ng-class="test"><img src="url" alt="Cute cat" class="dog cute" /></div>
 ```
 
 Use the render method or cast the class to string to get the html.
@@ -51,9 +48,10 @@ Change the attribute. Chainable.
 
 ```
 $tag = new Tag('div');
-$tag->attr('foo'); // <div foo></div>>
+$tag->attr('foo'); // <div foo=""></div>>
 $tag->attr('foo', ''); // <div foo=""></div>
 $tag->attr('foo', 'bar'); // <div foo="bar"></div>
+$tag->attr('foo', '"bar"'); // <div foo="&quot;bar&quot;"></div>
 ```
 
 Preserves the original php type:
@@ -61,6 +59,13 @@ Preserves the original php type:
 ```
 $tag->attr('foo', true); // <div foo="1"></div>
 $tag->getAttr('foo'); // true
+```
+
+Html entities and double quotes are converted (only when rendered):
+
+```
+$tag->attr('foo', '"foo" \'bar\' <script></script>'); // <div foo="&quot;foo&quot; 'bar' &lt;script&gt;&lt;/script&gt;"></div>
+$tag->getAttr('foo'); // "foo" \'bar\' <script></script>
 ```
 
 #### mixed getAttr ( string $name )
@@ -126,7 +131,7 @@ Replace existing classes. Chainable. You can use it with the class pseudo method
 
 ```
 $tag = Tag('img');
-$tag->class('test); // <img class="test">
+$tag->class('test); // <img class="test" />
 ```
 
 #### array getClass ()
@@ -172,7 +177,7 @@ Non-existing methods are treated as attributes using the __call method:
 
 ```
 $tag = new Tag('img');
-$tag->foo('bar')->bar('foo'); // <img foo="bar" bar="foo">
+$tag->foo('bar')->bar('foo'); // <img foo="bar" bar="foo" />
 ```
 
 You can use this class statically:
@@ -197,7 +202,7 @@ $tag = Tag::form('url', 'delete');
 
 ```
 <form action="url" method="post">
-    <input type="hidden" name="_method" value="delete">
+    <input type="hidden" name="_method" value="delete" />
 </form>
 ```
 
@@ -209,7 +214,7 @@ $tag = Tag::form('url', 'post', 'foo bar');
 
 ```
 <form action="url" method="post">
-    <input type="hidden" name="_token" value="foo bar">
+    <input type="hidden" name="_token" value="foo bar" />
 </form>
 ```
 
@@ -270,8 +275,7 @@ $tag = Tag::select('foo', [
 ### Hello World
 
 ```
-print Tag::make('!DOCTYPE')->html()->add(
-    Tag::html()->lang('en')
+print Tag::html()->lang('en')
     ->add(Tag::head()
         ->add(Tag::title()->add('HTML5'))
         ->add(Tag::meta()->charset('utf-8'))
@@ -279,6 +283,5 @@ print Tag::make('!DOCTYPE')->html()->add(
     )
     ->add(Tag::body()
         ->add(Tag::div('Hello World!'))
-    )
-);
+    );
 ```

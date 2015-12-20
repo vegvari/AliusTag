@@ -93,6 +93,7 @@ class TagTest extends PHPUnit_Framework_TestCase
         // converting html entities
         $tag = new Tag('div');
         $tag->attr('foo', '"" \'\' <script></script>');
+        $this->assertSame('"" \'\' <script></script>', $tag->getAttr('foo'));
         $this->assertSame('foo="&quot;&quot; \'\' &lt;script&gt;&lt;/script&gt;"', $tag->renderAttr());
     }
 
