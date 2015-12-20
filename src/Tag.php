@@ -210,6 +210,10 @@ class Tag
      */
     public function add($value)
     {
+        if (is_string($value)) {
+            $value = htmlspecialchars($value, ENT_QUOTES);
+        }
+
         $this->content .= (string) $value;
         return $this;
     }
