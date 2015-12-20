@@ -89,6 +89,11 @@ class TagTest extends PHPUnit_Framework_TestCase
         // testing chainable
         $this->assertSame($tag, $tag->attr('foo'));
         $this->assertSame($tag, $tag->deleteAttr('foo'));
+
+        // converting html entities
+        $tag = new Tag('div');
+        $tag->attr('foo', '"" \'\' <script></script>');
+        $this->assertSame('foo="&quot;&quot; \'\' &lt;script&gt;&lt;/script&gt;"', $tag->renderAttr());
     }
 
     public function testContent()

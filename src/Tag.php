@@ -27,9 +27,9 @@ class Tag
     protected $attributes = [];
 
     /**
-     * @var string
+     * @var array
      */
-    protected $content = '';
+    protected $content = [];
 
     /**
      * @param string $tag
@@ -135,6 +135,10 @@ class Tag
      */
     public function attr($name, $value = null)
     {
+        if (is_string($value)) {
+            $value = htmlspecialchars((string) $value, ENT_COMPAT);
+        }
+
         $this->attributes[$name] = $value;
         return $this;
     }
@@ -210,11 +214,10 @@ class Tag
      */
     public function add($value)
     {
-        if (is_string($value)) {
-            $value = htmlspecialchars($value, ENT_QUOTES);
+        if ($value !== null && $value !== '') {
+            $this->content[] = $value;
         }
 
-        $this->content .= (string) $value;
         return $this;
     }
 
@@ -236,7 +239,7 @@ class Tag
      */
     public function hasContent()
     {
-        return $this->content !== '';
+        return $this->content !== [];
     }
 
     /**
@@ -246,7 +249,7 @@ class Tag
      */
     public function deleteContent()
     {
-        $this->content = '';
+        $this->content = [];
         return $this;
     }
 
@@ -257,7 +260,17 @@ class Tag
      */
     public function renderContent()
     {
-        return $this->content;
+        $content = '';
+
+        foreach ($this->content as $key => $value) {
+            if (is_string($value)) {
+                $content .= htmlspecialchars($value, ENT_QUOTES);
+            } else {
+                $content .= (string) $value;
+            }
+        }
+
+        return $content;
     }
 
     /**
