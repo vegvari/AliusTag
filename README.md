@@ -51,7 +51,6 @@ $tag = new Tag('div');
 $tag->attr('foo'); // <div foo=""></div>>
 $tag->attr('foo', ''); // <div foo=""></div>
 $tag->attr('foo', 'bar'); // <div foo="bar"></div>
-$tag->attr('foo', '"bar"'); // <div foo="&quot;bar&quot;"></div>
 ```
 
 Preserves the original php type:
@@ -65,7 +64,7 @@ Html entities and double quotes are converted (only when rendered):
 
 ```
 $tag->attr('foo', '"foo" \'bar\' <script></script>'); // <div foo="&quot;foo&quot; 'bar' &lt;script&gt;&lt;/script&gt;"></div>
-$tag->getAttr('foo'); // "foo" \'bar\' <script></script>
+$tag->getAttr('foo'); // "foo" 'bar' <script></script>
 ```
 
 #### mixed getAttr ( string $name )
