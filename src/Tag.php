@@ -2,6 +2,8 @@
 
 namespace Alius\Tag;
 
+use Closure;
+
 class Tag
 {
     /**
@@ -14,6 +16,11 @@ class Tag
      * @var string
      */
     protected $tag;
+
+    /**
+     * @var string
+     */
+    protected $name;
 
     /**
      * @var bool
@@ -39,7 +46,7 @@ class Tag
     }
 
     /**
-     * Render when casting to string
+     * Cast to string
      *
      * @return string
      */
@@ -123,6 +130,28 @@ class Tag
     public function isSingleton()
     {
         return $this->singleton;
+    }
+
+    /**
+     * Name this tag
+     *
+     * @param  string $value
+     * @return this
+     */
+    public function setName($value)
+    {
+        $this->name = (string) $value;
+        return $this;
+    }
+
+    /**
+     * Get the name
+     *
+     * @return string
+     */
+    public function getName()
+    {
+        return $this->name;
     }
 
     /**
@@ -269,6 +298,37 @@ class Tag
     }
 
     /**
+     * Find the first Tag instance by name, id or tag
+     *
+     * @param  string   $term
+     * @return Tag|null
+     */
+    public function findFirst($term)
+    {
+        foreach ($this->content as $key => $value) {
+            if ($value->getName() === $term || $value->getAttr('id') === $term || $value->getTag() === $term) {
+                return $value;
+            }
+        }
+    }
+
+    /**
+     * Find the first Tag and change it with a closure
+     *
+     * @param  string  $term
+     * @param  Closure $change
+     * @return this
+     */
+    public function changeFirst($term, Closure $change)
+    {
+        if (($tag = $this->findFirst($term)) !== null) {
+            $change($tag);
+        }
+
+        return $this;
+    }
+
+    /**
      * Add class
      *
      * @param  mixed $values
@@ -329,7 +389,13 @@ class Tag
      */
     public function hasClass($name)
     {
-        return array_search($name, $this->getClass()) !== false;
+        foreach ($this->getClass() as $key => $value) {
+            if (preg_match('/^' . $name . '$/ui', $value) === 1) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**
@@ -479,7 +545,7 @@ class Tag
      */
     public static function img($src)
     {
-        return static::make('img')->src($src);
+        return static::make('img')->src($src)->alt();
     }
 
     /**
