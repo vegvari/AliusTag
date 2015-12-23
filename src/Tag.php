@@ -296,11 +296,11 @@ class Tag
         $content = '';
 
         foreach ($this->content as $value) {
-            $content .= (string) $value;
-
             if (is_string($value)) {
-                $content .= htmlspecialchars($value, ENT_QUOTES);
+                $value = htmlspecialchars($value, ENT_QUOTES);
             }
+
+            $content .= (string) $value;
         }
 
         return $content;
