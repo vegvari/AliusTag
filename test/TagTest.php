@@ -23,7 +23,7 @@ class TagTest extends PHPUnit_Framework_TestCase
         $singletons = ['area', 'base', 'br', 'col', 'command', 'embed', 'hr',
             'img', 'input', 'link', 'meta', 'param', 'source', 'wbr', ];
 
-        foreach ($singletons as $key => $value) {
+        foreach ($singletons as $value) {
             $tag = new Tag($value);
             $this->assertSame(true, $tag->isSingleton());
         }
@@ -494,11 +494,9 @@ class TagTest extends PHPUnit_Framework_TestCase
             ->add(Tag::head()
                 ->add(Tag::title()->add('HTML5'))
                 ->add(Tag::meta()->charset('utf-8'))
-                ->add(Tag::meta()->author('Romeo Vegvari'))
-            )
+                ->add(Tag::meta()->author('Romeo Vegvari')))
             ->add(Tag::body()
-                ->add(Tag::div('Hello World!'))
-            );
+                ->add(Tag::div('Hello World!')));
 
         $this->assertSame('<html lang="en"><head><title>HTML5</title><meta charset="utf-8" /><meta author="Romeo Vegvari" /></head><body><div>Hello World!</div></body></html>', $tag->render());
     }

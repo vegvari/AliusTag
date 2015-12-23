@@ -58,8 +58,9 @@ class Tag
     /**
      * Add attributes
      *
-     * @param  string $name
-     * @param  array  $args
+     * @param string $name
+     * @param array  $args
+     *
      * @return this
      */
     public function __call($name, array $args = [])
@@ -79,8 +80,9 @@ class Tag
     /**
      * Universal factory
      *
-     * @param  string $name
-     * @param  array  $args
+     * @param string $name
+     * @param array  $args
+     *
      * @return this
      */
     public static function __callStatic($name, array $args = [])
@@ -91,7 +93,8 @@ class Tag
     /**
      * Set the tag
      *
-     * @param  string $tag
+     * @param string $tag
+     *
      * @return this
      */
     public function setTag($tag)
@@ -135,7 +138,8 @@ class Tag
     /**
      * Name this tag
      *
-     * @param  string $value
+     * @param string $value
+     *
      * @return this
      */
     public function setName($value)
@@ -157,8 +161,9 @@ class Tag
     /**
      * Replace attribute
      *
-     * @param  string $name
-     * @param  mixed  $value
+     * @param string $name
+     * @param mixed  $value
+     *
      * @return this
      */
     public function attr($name, $value = null)
@@ -170,7 +175,7 @@ class Tag
     /**
      * Get attribute
      *
-     * @param  string $name
+     * @param string $name
      * @return mixed
      */
     public function getAttr($name)
@@ -183,7 +188,8 @@ class Tag
     /**
      * Is this attribute set?
      *
-     * @param  string $name
+     * @param string $name
+     *
      * @return bool
      */
     public function hasAttr($name)
@@ -194,7 +200,8 @@ class Tag
     /**
      * Delete attribute
      *
-     * @param  string $name
+     * @param string $name
+     *
      * @return this
      */
     public function deleteAttr($name)
@@ -233,7 +240,8 @@ class Tag
     /**
      * Add content
      *
-     * @param  mixed $value
+     * @param mixed $value
+     *
      * @return this
      */
     public function add($value)
@@ -248,7 +256,8 @@ class Tag
     /**
      * Replace the content
      *
-     * @param  mixed $value
+     * @param mixed $value
+     *
      * @return this
      */
     public function setContent($value)
@@ -286,11 +295,11 @@ class Tag
     {
         $content = '';
 
-        foreach ($this->content as $key => $value) {
+        foreach ($this->content as $value) {
+            $content .= (string) $value;
+
             if (is_string($value)) {
                 $content .= htmlspecialchars($value, ENT_QUOTES);
-            } else {
-                $content .= (string) $value;
             }
         }
 
@@ -300,12 +309,13 @@ class Tag
     /**
      * Find the first Tag instance by name, id or tag
      *
-     * @param  string   $term
+     * @param string $term
+     *
      * @return Tag|null
      */
     public function findFirst($term)
     {
-        foreach ($this->content as $key => $value) {
+        foreach ($this->content as $value) {
             if ($value->getName() === $term || $value->getAttr('id') === $term || $value->getTag() === $term) {
                 return $value;
             }
@@ -315,8 +325,9 @@ class Tag
     /**
      * Find the first Tag and change it with a closure
      *
-     * @param  string  $term
-     * @param  Closure $change
+     * @param string  $term
+     * @param Closure $change
+     *
      * @return this
      */
     public function changeFirst($term, Closure $change)
@@ -331,7 +342,8 @@ class Tag
     /**
      * Add class
      *
-     * @param  mixed $values
+     * @param mixed $values
+     *
      * @return this
      */
     public function addClass($values)
@@ -342,7 +354,6 @@ class Tag
 
         $values = is_array($values) ? $values : [$values];
 
-        $classes = [];
         foreach ($values as $value) {
             $pieces = explode(' ', preg_replace('/\s+/', ' ', $value));
 
@@ -359,7 +370,8 @@ class Tag
     /**
      * Replace class
      *
-     * @param  string|array $values
+     * @param string|array $values
+     *
      * @return this
      */
     public function setClass($values)
@@ -384,12 +396,13 @@ class Tag
     /**
      * Is the class set?
      *
-     * @param  string $name
+     * @param string $name
+     *
      * @return bool
      */
     public function hasClass($name)
     {
-        foreach ($this->getClass() as $key => $value) {
+        foreach ($this->getClass() as $value) {
             if (preg_match('/^' . $name . '$/ui', $value) === 1) {
                 return true;
             }
@@ -401,7 +414,8 @@ class Tag
     /**
      * Delete class
      *
-     * @param  string $name
+     * @param string $name
+     *
      * @return this
      */
     public function deleteClass($name)
@@ -410,9 +424,11 @@ class Tag
             unset($this->attributes['class'][$index]);
             if (count($this->attributes['class']) === 0) {
                 unset($this->attributes['class']);
-            } else {
-                sort($this->attributes['class']);
+
+                return $this;
             }
+
+            sort($this->attributes['class']);
         }
 
         return $this;
@@ -421,8 +437,9 @@ class Tag
     /**
      * Replace data attribute
      *
-     * @param  string $name
-     * @param  mixed  $value
+     * @param string $name
+     * @param mixed  $value
+     *
      * @return this
      */
     public function data($name, $value = null)
@@ -433,7 +450,8 @@ class Tag
     /**
      * Get data attribute
      *
-     * @param  string $name
+     * @param string $name
+     *
      * @return mixed
      */
     public function getData($name)
@@ -444,7 +462,8 @@ class Tag
     /**
      * Is this data attribute set?
      *
-     * @param  string $name
+     * @param string $name
+     *
      * @return bool
      */
     public function hasData($name)
@@ -455,7 +474,8 @@ class Tag
     /**
      * Delete data attribute
      *
-     * @param  string $name
+     * @param string $name
+     *
      * @return this
      */
     public function deleteData($name)
@@ -479,14 +499,13 @@ class Tag
 
         if ($this->isSingleton()) {
             $render[] = ' />';
-        } else {
+            $render[] = $this->renderContent();
+        }
+
+        if (! $this->isSingleton()) {
             $render[] = '>';
             $render[] = $this->renderContent();
             $render[] = '</' . $this->tag . '>';
-        }
-
-        if ($this->isSingleton()) {
-            $render[] = $this->renderContent();
         }
 
         return implode('', $render);
@@ -495,7 +514,8 @@ class Tag
     /**
      * Simple factory
      *
-     * @param  string $tag
+     * @param string $tag
+     *
      * @return this
      */
     public static function make($tag)
@@ -506,7 +526,7 @@ class Tag
     /**
      * Create a div
      *
-     * @param  mixed $content
+     * @param mixed $content
      * @return this
      */
     public static function div($content = null)
@@ -517,7 +537,8 @@ class Tag
     /**
      * Create a span
      *
-     * @param  mixed $content
+     * @param mixed $content
+     *
      * @return this
      */
     public static function span($content = null)
@@ -528,8 +549,8 @@ class Tag
     /**
      * Create anchor
      *
-     * @param  string $href
-     * @param  mixed  $content
+     * @param string $href
+     * @param mixed  $content
      * @return this
      */
     public static function a($href, $content)
@@ -540,7 +561,8 @@ class Tag
     /**
      * Create img
      *
-     * @param  string $src
+     * @param string $src
+     *
      * @return this
      */
     public static function img($src)
@@ -551,8 +573,10 @@ class Tag
     /**
      * Create post form
      *
-     * @param  string $action
-     * @param  string $method
+     * @param string      $action
+     * @param string      $method
+     * @param string|null $token
+     *
      * @return this
      */
     public static function form($action, $method = 'post', $token = null)
@@ -575,7 +599,8 @@ class Tag
     /**
      * Create label
      *
-     * @param  mixed $text
+     * @param mixed $text
+     *
      * @return this
      */
     public static function label($text = null)
@@ -586,8 +611,9 @@ class Tag
     /**
      * Create label for another tag
      *
-     * @param  mixed $for
-     * @param  mixed $text
+     * @param mixed $for
+     * @param mixed $text
+     *
      * @return this
      */
     public static function labelFor($for, $text = null)
@@ -608,7 +634,8 @@ class Tag
     /**
      * Create caption
      *
-     * @param  mixed $text
+     * @param mixed $text
+     *
      * @return this
      */
     public static function caption($text = null)
@@ -619,9 +646,9 @@ class Tag
     /**
      * Create input
      *
-     * @param  string $type
-     * @param  string $name
-     * @param  mixed  $value
+     * @param string $type
+     * @param string $name
+     * @param mixed  $value
      * @return this
      */
     public static function input($type, $name, $value = null)
@@ -638,12 +665,13 @@ class Tag
     /**
      * Create checkox input
      *
-     * @param  string $name
-     * @param  mixed  $value
-     * @param  bool   $checked
+     * @param string $name
+     * @param mixed  $value
+     * @param bool   $checked
+     *
      * @return this
      */
-    public static function checkbox($name, $value, $checked = false)
+    public static function checkbox($name, $value, $checked = null)
     {
         $instance = static::input('checkbox', $name, $value);
 
@@ -657,12 +685,13 @@ class Tag
     /**
      * Create radio input
      *
-     * @param  string $name
-     * @param  mixed  $value
-     * @param  bool   $checked
+     * @param string $name
+     * @param mixed  $value
+     * @param bool   $checked
+     *
      * @return this
      */
-    public static function radio($name, $value, $checked = false)
+    public static function radio($name, $value, $checked = null)
     {
         $instance = static::input('radio', $name, $value);
 
@@ -676,8 +705,9 @@ class Tag
     /**
      * Create text input
      *
-     * @param  string $name
-     * @param  mixed  $value
+     * @param string $name
+     * @param mixed  $value
+     *
      * @return this
      */
     public static function text($name, $value = null)
@@ -688,7 +718,8 @@ class Tag
     /**
      * Create password input
      *
-     * @param  string $name
+     * @param string $name
+     *
      * @return this
      */
     public static function password($name)
@@ -699,8 +730,9 @@ class Tag
     /**
      * Create hidden input
      *
-     * @param  string $name
-     * @param  mixed  $value
+     * @param string $name
+     * @param mixed  $value
+     *
      * @return this
      */
     public static function hidden($name, $value)
@@ -711,15 +743,16 @@ class Tag
     /**
      * Create select
      *
-     * @param  string $name
-     * @param  array  $options
+     * @param string $name
+     * @param array  $options
+     *
      * @return this
      */
     public static function select($name, array $options = [])
     {
         $instance = static::make('select')->name($name);
 
-        foreach ($options as $key => $value) {
+        foreach ($options as $value) {
             $instance->add($value);
         }
 
@@ -729,12 +762,13 @@ class Tag
     /**
      * Create option
      *
-     * @param  string $name
-     * @param  mixed  $text
-     * @param  bool   $selected
+     * @param string $name
+     * @param mixed  $text
+     * @param bool   $selected
+     *
      * @return this
      */
-    public static function option($value, $text, $selected = false)
+    public static function option($value, $text, $selected = null)
     {
         $instance = static::make('option')->value($value)->add($text);
 
@@ -748,8 +782,9 @@ class Tag
     /**
      * Create textarea
      *
-     * @param  string $name
-     * @param  mixed  $value
+     * @param string $name
+     * @param mixed  $value
+     *
      * @return this
      */
     public static function textarea($name, $value = null)
