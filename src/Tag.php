@@ -2,8 +2,6 @@
 
 namespace Alius\Tag;
 
-use Closure;
-
 class Tag
 {
     /**
