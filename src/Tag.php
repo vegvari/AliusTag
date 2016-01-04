@@ -204,12 +204,7 @@ class Tag
     public function add($value)
     {
         if ($value !== null && $value !== '') {
-            if (! $value instanceof static) {
-                $this->content[] = htmlspecialchars($value, ENT_QUOTES);
-                return $this;
-            }
-
-            $this->content[] = (string) $value;
+            $this->content[] = $value;
         }
 
         return $this;
@@ -255,7 +250,16 @@ class Tag
      */
     public function renderContent()
     {
-        return implode('', $this->content);
+        $content = '';
+        foreach ($this->content as $value) {
+            if ($value instanceof static) {
+                $content .= (string) $value;
+                continue;
+            }
+
+            $content .= htmlspecialchars($value, ENT_QUOTES);
+        }
+        return $content;
     }
 
     /**

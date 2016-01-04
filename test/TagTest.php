@@ -139,6 +139,13 @@ class TagTest extends PHPUnit_Framework_TestCase
         $tag = new Tag('div');
         $tag->add('"" \'\' <script></script>');
         $this->assertSame('&quot;&quot; &#039;&#039; &lt;script&gt;&lt;/script&gt;', $tag->renderContent());
+
+        // keeping references
+        $tag = Tag::div()->add(($foo = Tag::div('foo')));
+        $this->assertSame('<div><div>foo</div></div>', (string) $tag);
+
+        $foo->add('bar');
+        $this->assertSame('<div><div>foobar</div></div>', (string) $tag);
     }
 
     public function testClass()
