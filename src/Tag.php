@@ -678,9 +678,9 @@ class Tag
     /**
      * Create option
      *
-     * @param string $name
-     * @param mixed  $text
-     * @param bool   $selected
+     * @param mixed $value
+     * @param mixed $text
+     * @param bool  $selected
      *
      * @return this
      */
