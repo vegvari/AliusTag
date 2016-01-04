@@ -18,11 +18,6 @@ class Tag
     protected $tag;
 
     /**
-     * @var string
-     */
-    protected $name;
-
-    /**
      * @var bool
      */
     protected $singleton = false;
@@ -42,7 +37,8 @@ class Tag
      */
     public function __construct($tag)
     {
-        $this->setTag($tag);
+        $this->tag = $tag;
+        $this->singleton = in_array($this->tag, static::$singletons);
     }
 
     /**
@@ -91,20 +87,6 @@ class Tag
     }
 
     /**
-     * Set the tag
-     *
-     * @param string $tag
-     *
-     * @return this
-     */
-    public function setTag($tag)
-    {
-        $this->tag = $tag;
-        $this->singleton = in_array($this->tag, static::$singletons);
-        return $this;
-    }
-
-    /**
      * Get the tag
      *
      * @return string
@@ -133,29 +115,6 @@ class Tag
     public function isSingleton()
     {
         return $this->singleton;
-    }
-
-    /**
-     * Name this tag
-     *
-     * @param string $value
-     *
-     * @return this
-     */
-    public function setName($value)
-    {
-        $this->name = (string) $value;
-        return $this;
-    }
-
-    /**
-     * Get the name
-     *
-     * @return string
-     */
-    public function getName()
-    {
-        return $this->name;
     }
 
     /**
@@ -247,7 +206,12 @@ class Tag
     public function add($value)
     {
         if ($value !== null && $value !== '') {
-            $this->content[] = $value;
+            if (! $value instanceof static) {
+                $this->content[] = htmlspecialchars($value, ENT_QUOTES);
+                return $this;
+            }
+
+            $this->content[] = (string) $value;
         }
 
         return $this;
@@ -293,50 +257,7 @@ class Tag
      */
     public function renderContent()
     {
-        $content = '';
-
-        foreach ($this->content as $value) {
-            if (is_string($value)) {
-                $value = htmlspecialchars($value, ENT_QUOTES);
-            }
-
-            $content .= (string) $value;
-        }
-
-        return $content;
-    }
-
-    /**
-     * Find the first Tag instance by name, id or tag
-     *
-     * @param string $term
-     *
-     * @return Tag|null
-     */
-    public function findFirst($term)
-    {
-        foreach ($this->content as $value) {
-            if ($value->getName() === $term || $value->getAttr('id') === $term || $value->getTag() === $term) {
-                return $value;
-            }
-        }
-    }
-
-    /**
-     * Find the first Tag and change it with a closure
-     *
-     * @param string  $term
-     * @param Closure $change
-     *
-     * @return this
-     */
-    public function changeFirst($term, Closure $change)
-    {
-        if (($tag = $this->findFirst($term)) !== null) {
-            $change($tag);
-        }
-
-        return $this;
+        return implode('', $this->content);
     }
 
     /**
@@ -349,6 +270,8 @@ class Tag
     public function addClass($values)
     {
         if ($values === null || $values === '') {
+            $this->attributes['class'] = [];
+            return $this;
             return $this->attr('class', $values);
         }
 
@@ -386,7 +309,7 @@ class Tag
      */
     public function getClass()
     {
-        if ($this->hasAttr('class') && is_array($this->attributes['class'])) {
+        if ($this->hasAttr('class')) {
             return $this->attributes['class'];
         }
 
@@ -402,13 +325,7 @@ class Tag
      */
     public function hasClass($name)
     {
-        foreach ($this->getClass() as $value) {
-            if (preg_match('/^' . $name . '$/ui', $value) === 1) {
-                return true;
-            }
-        }
-
-        return false;
+        return in_array($name, $this->getClass());
     }
 
     /**
@@ -424,7 +341,6 @@ class Tag
             unset($this->attributes['class'][$index]);
             if (count($this->attributes['class']) === 0) {
                 unset($this->attributes['class']);
-
                 return $this;
             }
 

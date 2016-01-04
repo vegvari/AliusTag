@@ -10,12 +10,6 @@ class TagTest extends PHPUnit_Framework_TestCase
     {
         $tag = new Tag('div');
         $this->assertSame('div', $tag->getTag());
-
-        $tag->setTag('img');
-        $this->assertSame('img', $tag->getTag());
-
-        // test chainable
-        $this->assertSame($tag, $tag->setTag('span'));
     }
 
     public function testDefaultSingletons()
@@ -39,48 +33,6 @@ class TagTest extends PHPUnit_Framework_TestCase
 
         // test chainable
         $this->assertSame($tag, $tag->singleton());
-    }
-
-    public function testSetName()
-    {
-        $tag = Tag::img('url');
-        $this->assertSame($tag, $tag->setName('foo'));
-        $this->assertSame('foo', $tag->getName());
-        $this->assertSame('<img src="url" alt="" />', (string) $tag);
-    }
-
-    public function testFindFirst()
-    {
-        $first = Tag::img('url');
-        $second = Tag::img('url')->id('bar');
-        $third = Tag::img('url')->setName('foobar');
-        $tag = Tag::div()->add($first)->add($second)->add($third);
-
-        $this->assertSame($first, $tag->findFirst('img'));
-        $this->assertSame($second, $tag->findFirst('bar'));
-        $this->assertSame($third, $tag->findFirst('foobar'));
-    }
-
-    public function testChangeFirst()
-    {
-        $img = Tag::img('url');
-        $tag = Tag::div($img);
-
-        $tag->changeFirst('img', function (Tag $tag) {
-            return $tag->alt('foobar');
-        });
-
-        $this->assertSame('foobar', $img->getAttr('alt'));
-        $this->assertSame($tag, $tag->changeFirst('img', function (Tag $tag) {
-            return $tag;
-        }));
-        $this->assertSame('<div><img src="url" alt="foobar" /></div>', $tag->render());
-
-        // nothing happens
-        $this->assertSame(null, $tag->findFirst('foobar'));
-        $this->assertSame($tag, $tag->changeFirst('foobar', function (Tag $tag) {
-            return $tag;
-        }));
     }
 
     public function testAttr()
@@ -267,15 +219,6 @@ class TagTest extends PHPUnit_Framework_TestCase
         $this->assertSame($tag, $tag->addClass('foo'));
         $this->assertSame($tag, $tag->setClass('bar'));
         $this->assertSame($tag, $tag->deleteClass('bar'));
-
-        // test hasClass regexp
-        $tag = Tag::div()->class('test_foo test_bar12');
-        $this->assertSame(false, $tag->hasClass('test'));
-        $this->assertSame(true, $tag->hasClass('test.+'));
-        $this->assertSame(false, $tag->hasClass('foo'));
-        $this->assertSame(true, $tag->hasClass('.+foo'));
-        $this->assertSame(false, $tag->hasClass('.+bar'));
-        $this->assertSame(true, $tag->hasClass('.+bar[0-9]+'));
     }
 
     public function testData()
