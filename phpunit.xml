@@ -10,7 +10,7 @@
     </php>
 
     <testsuites>
-        <testsuite name="Alius\Tag tests">
+        <testsuite name="Alius/Tag tests">
             <directory>./test/</directory>
         </testsuite>
     </testsuites>
