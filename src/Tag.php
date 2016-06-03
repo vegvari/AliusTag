@@ -125,6 +125,10 @@ class Tag
      */
     public function attr($name, $value = null)
     {
+        if ($name === 'class') {
+            return $this->addClass($value);
+        }
+
         $this->attributes[$name] = $value;
         return $this;
     }
@@ -274,7 +278,6 @@ class Tag
         if ($values === null || $values === '') {
             $this->attributes['class'] = [];
             return $this;
-            return $this->attr('class', $values);
         }
 
         $values = is_array($values) ? $values : [$values];

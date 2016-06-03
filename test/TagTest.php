@@ -146,6 +146,13 @@ class TagTest extends PHPUnit_Framework_TestCase
 
         $foo->add('bar');
         $this->assertSame('<div><div>foobar</div></div>', (string) $tag);
+
+        // adding class using attr
+        $tag = new Tag('div');
+        $tag->addClass('foo');
+        $this->assertSame('<div class="foo"></div>', (string) $tag);
+        $tag->attr('class', 'bar');
+        $this->assertSame('<div class="foo bar"></div>', (string) $tag);
     }
 
     public function testClass()
