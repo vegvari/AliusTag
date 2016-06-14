@@ -261,7 +261,7 @@ class Tag
                 continue;
             }
 
-            $content .= htmlspecialchars($value, ENT_QUOTES);
+            $content .= htmlspecialchars(htmlspecialchars_decode($value, ENT_QUOTES), ENT_QUOTES);
         }
         return $content;
     }
