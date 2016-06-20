@@ -429,13 +429,16 @@ class TagTest extends PHPUnit_Framework_TestCase
         $instance = Tag::select('test');
         $this->assertSame('<select name="test"></select>', $instance->render());
 
-        $instance = Tag::select('test', [Tag::option('test', 'stuff'), Tag::option('test2', 'stuff2')]);
+        $instance = Tag::select('test', [Tag::option('stuff', 'test'), Tag::option('stuff2', 'test2')]);
         $this->assertSame('<select name="test"><option value="test">stuff</option><option value="test2">stuff2</option></select>', $instance->render());
 
-        $instance = Tag::option('test', 'stuff');
-        $this->assertSame('<option value="test">stuff</option>', $instance->render());
+        $instance = Tag::option('stuff');
+        $this->assertSame('<option value="">stuff</option>', $instance->render());
 
-        $instance = Tag::option('test', 'stuff', true);
+        $instance = Tag::option('foo', 'bar');
+        $this->assertSame('<option value="bar">foo</option>', $instance->render());
+
+        $instance = Tag::option('stuff', 'test', true);
         $this->assertSame('<option value="test" selected="selected">stuff</option>', $instance->render());
 
         $instance = Tag::textarea('test');

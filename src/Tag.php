@@ -30,6 +30,10 @@ class Tag
      */
     protected $content = [];
 
+    protected $allowed_tags = [
+        'strong', 'em', 'small', 'big', 'mark', 'del', 'strike', 'ins', 'sub', 'sup', 'code', 'abbr', 'cite', 'kbd', 'tt', 'acronym',
+    ];
+
     /**
      * @param string $tag
      */
@@ -208,6 +212,7 @@ class Tag
     public function add($value)
     {
         if ($value !== null && $value !== '') {
+            $r = preg_match_all('/\<(?P<tag>strong)(?P<attr>(\s+[a-z-0-9]+\=\"[^\"<>]*\")*)\>(?P<content>[^<>]*)\<\/\1>/ui', $value, $matches);
             $this->content[] = $value;
         }
 
@@ -683,15 +688,15 @@ class Tag
     /**
      * Create option
      *
-     * @param mixed $value
      * @param mixed $text
+     * @param mixed $value
      * @param bool  $selected
      *
      * @return this
      */
-    public static function option($value, $text, $selected = null)
+    public static function option($text, $value = null, $selected = null)
     {
-        $instance = static::make('option')->value($value)->add($text);
+        $instance = static::make('option')->add($text)->value($value);
 
         if ($selected === true) {
             $instance->selected('selected');

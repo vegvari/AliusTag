@@ -231,9 +231,9 @@ Use it with option tags:
 
 ```
 $tag = Tag::select('foo', [
-    Tag::option(1, 'one'),
-    Tag::option(2, 'two'),
-    Tag::option(3, 'three'),
+    Tag::option('one', 1),
+    Tag::option('two', 2),
+    Tag::option('three', 3),
 ]);
 ```
 
@@ -267,7 +267,7 @@ $tag = Tag::select('foo', [
 
 ##### object hidden ( string $name, string $value )
 
-##### object option ( string $value, string $text, $selected = false )
+##### object option ( string $text, string $value = null, $selected = false )
 
 ##### object textarea ( string $name, string $value = null )
 
