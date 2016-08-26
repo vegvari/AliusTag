@@ -32,7 +32,7 @@ class Tag
 
     protected $allowed_tags = [
         'strong', 'em', 'small', 'big', 'mark', 'del', 'strike', 'ins', 'sub', 'sup', 'code', 'abbr', 'cite', 'kbd', 'tt',
-        'acronym', 'span',
+        'acronym', 'span', 'a', 'ul', 'ol', 'li',
     ];
 
     protected $allowed_singleton_tags = [
