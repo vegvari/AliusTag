@@ -460,4 +460,48 @@ class TagTest extends PHPUnit_Framework_TestCase
 
         $this->assertSame('<html lang="en"><head><title>HTML5</title><meta charset="utf-8" /><meta author="Romeo Vegvari" /></head><body><div>Hello World!</div></body></html>', $tag->render());
     }
+
+    public function testAllowedTags()
+    {
+        $tag = new Tag('div');
+
+        $tag->setContent('<span></span>');
+        $this->assertSame('<div><span></span></div>', (string) $tag);
+
+        $tag->setContent('<span>foo</span>');
+        $this->assertSame('<div><span>foo</span></div>', (string) $tag);
+
+        $tag->setContent('<span foo="bar"></span>');
+        $this->assertSame('<div><span foo="bar"></span></div>', (string) $tag);
+
+        $tag->setContent('<span foo="bar">foo</span>');
+        $this->assertSame('<div><span foo="bar">foo</span></div>', (string) $tag);
+
+        $tag->setContent('<span foo="bar" bar="baz"></span>');
+        $this->assertSame('<div><span foo="bar" bar="baz"></span></div>', (string) $tag);
+
+        $tag->setContent('<span foo="bar" bar="baz">foo</span>');
+        $this->assertSame('<div><span foo="bar" bar="baz">foo</span></div>', (string) $tag);
+
+        $tag->setContent('<br>');
+        $this->assertSame('<div><br /></div>', (string) $tag);
+
+        $tag->setContent('<br/>');
+        $this->assertSame('<div><br /></div>', (string) $tag);
+
+        $tag->setContent('<br />');
+        $this->assertSame('<div><br /></div>', (string) $tag);
+
+        $tag->setContent('<hr>');
+        $this->assertSame('<div><hr /></div>', (string) $tag);
+
+        $tag->setContent('<hr/>');
+        $this->assertSame('<div><hr /></div>', (string) $tag);
+
+        $tag->setContent('<hr />');
+        $this->assertSame('<div><hr /></div>', (string) $tag);
+
+        $tag->setContent('<input>');
+        $this->assertSame('<div>&lt;input&gt;</div>', (string) $tag);
+    }
 }

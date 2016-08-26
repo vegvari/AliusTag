@@ -31,7 +31,12 @@ class Tag
     protected $content = [];
 
     protected $allowed_tags = [
-        'strong', 'em', 'small', 'big', 'mark', 'del', 'strike', 'ins', 'sub', 'sup', 'code', 'abbr', 'cite', 'kbd', 'tt', 'acronym',
+        'strong', 'em', 'small', 'big', 'mark', 'del', 'strike', 'ins', 'sub', 'sup', 'code', 'abbr', 'cite', 'kbd', 'tt',
+        'acronym', 'span',
+    ];
+
+    protected $allowed_singleton_tags = [
+        'br', 'hr',
     ];
 
     /**
@@ -205,15 +210,38 @@ class Tag
     /**
      * Add content
      *
-     * @param mixed $value
+     * @param mixed $text
      *
      * @return this
      */
-    public function add($value)
+    public function add($text)
     {
-        if ($value !== null && $value !== '') {
-            $r = preg_match_all('/\<(?P<tag>strong)(?P<attr>(\s+[a-z-0-9]+\=\"[^\"<>]*\")*)\>(?P<content>[^<>]*)\<\/\1>/ui', $value, $matches);
-            $this->content[] = $value;
+        if ($text !== null && $text !== '') {
+            if (! $text instanceof self) {
+                if (preg_match('/(?P<all>\<(?P<tag>' . implode('|', $this->allowed_tags) . ')(?P<attr>(\s+[a-z-_0-9]+\=\"[^\"<>]*\")*)\>(?P<content>.*?)\<\/\2>)/ui', $text, $matches, PREG_OFFSET_CAPTURE) === 1
+                    || preg_match('/(?P<all>\<(?P<tag>' . implode('|', $this->allowed_singleton_tags) . ')(?P<attr>(\s+[a-z-_0-9]+\=\"[^\"<>]*\")*)(\s*\/)?\>)/ui', $text, $matches, PREG_OFFSET_CAPTURE) === 1
+                ) {
+                    $tag = new Tag($matches['tag'][0]);
+
+                    if (preg_match_all('/\s+(?P<name>[a-z-_0-9]+)\=\"(?P<value>[^\"<>]*)\"/ui', $matches['attr'][0], $attr_matches) > 0) {
+                        foreach ($attr_matches['name'] as $key => $name) {
+                            $tag->attr($name, $attr_matches['value'][$key]);
+                        }
+                    }
+
+                    if (isset($matches['content'])) {
+                        $tag->setContent($matches['content'][0]);
+                    }
+
+                    $this->add(substr($text, 0, $matches['all'][1]));
+                    $this->content[] = $tag;
+                    $this->add(substr($text, $matches['all'][1] + strlen($matches['all'][0])));
+
+                    return $this;
+                }
+            }
+
+            $this->content[] = $text;
         }
 
         return $this;
