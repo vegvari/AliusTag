@@ -217,11 +217,11 @@ class Tag
     public function add($text)
     {
         if ($text !== null && $text !== '') {
-            if (! $text instanceof self) {
+            if (! $text instanceof static) {
                 if (preg_match('/(?P<all>\<(?P<tag>' . implode('|', $this->allowed_tags) . ')(?P<attr>(\s+[a-z-_0-9]+\=\"[^\"<>]*\")*)\>(?P<content>.*?)\<\/\2>)/ui', $text, $matches, PREG_OFFSET_CAPTURE) === 1
                     || preg_match('/(?P<all>\<(?P<tag>' . implode('|', $this->allowed_singleton_tags) . ')(?P<attr>(\s+[a-z-_0-9]+\=\"[^\"<>]*\")*)(\s*\/)?\>)/ui', $text, $matches, PREG_OFFSET_CAPTURE) === 1
                 ) {
-                    $tag = new Tag($matches['tag'][0]);
+                    $tag = new static($matches['tag'][0]);
 
                     if (preg_match_all('/\s+(?P<name>[a-z-_0-9]+)\=\"(?P<value>[^\"<>]*)\"/ui', $matches['attr'][0], $attr_matches) > 0) {
                         foreach ($attr_matches['name'] as $key => $name) {
